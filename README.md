@@ -1,7 +1,5 @@
 # RestfulTool
 
-<em style="color: red">This is not define in [~~RestfulToolkit~~]()</u></em>
-
 > - `min-version`: `201`
 >   * Please move to [`RESTFulToolkit`](https://plugins.jetbrains.com/plugin/10292-restfultoolkit) to install and use that low version
 > - `plugin-path`: [`RestfulTool`](https://plugins.jetbrains.com/plugin/14280-restfultool)
@@ -12,7 +10,7 @@
 > - [中文](./README_zh.md)
 
 #### Preface
-    Since the original author of the RESTFulToolkit plug-in is not updated, IDEA.201 and above versions are no longer adapted, so this plug-in was made with reference to the plug-in project of the original author.
+    Since the original author of the RESTFulToolkit plug-in is not updated, IDEA.2024.2 and above versions are no longer adapted, so this plug-in was made with reference to the plug-in project of the original author.
     Everyone is welcome to submit an issue | pr
     If you think it ’s not bad, please help me to tap start(*￣︶￣)thanks~
 
