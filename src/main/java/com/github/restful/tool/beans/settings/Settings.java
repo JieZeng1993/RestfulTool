@@ -25,6 +25,7 @@ import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
 import java.awt.*;
+import java.lang.ref.WeakReference;
 import java.lang.reflect.Field;
 import java.util.List;
 import java.util.*;
@@ -117,7 +118,12 @@ public class Settings {
     }
 
     public void initValue() {
-        for (Key<?> key : Key.getAllKeys().values()) {
+        Collection<WeakReference<Key<?>>> allKeys = Key.getAllKeys().values();
+        for (WeakReference<Key<?>> keyRef : allKeys) {
+            Key<?> key = keyRef.get();
+            if(key == null) {
+                continue;
+            }
             this.properties.put(key.getName(), key.getDefaultData().toString());
         }
     }

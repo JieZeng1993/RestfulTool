@@ -10,12 +10,14 @@
  */
 package com.github.restful.tool.beans;
 
-import com.intellij.util.containers.ContainerUtil;
 import com.intellij.util.containers.IntObjectMap;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.lang.ref.WeakReference;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
@@ -25,7 +27,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class Key<T> {
 
     private static final AtomicInteger OUR_KEYS_COUNTER = new AtomicInteger();
-    private static final IntObjectMap<Key<?>> ALL_KEYS = ContainerUtil.createConcurrentIntObjectWeakValueMap();
+    private static final ConcurrentHashMap<Integer, WeakReference<Key<?>>> ALL_KEYS = new ConcurrentHashMap<>();
 
     private final int index = OUR_KEYS_COUNTER.getAndIncrement();
 
@@ -35,7 +37,7 @@ public class Key<T> {
     protected Key(String name, T defaultData) {
         this.name = name;
         this.defaultData = defaultData;
-        ALL_KEYS.put(getIndex(), this);
+        ALL_KEYS.put(getIndex(), new WeakReference<>(this));
     }
 
     @NotNull
@@ -46,16 +48,24 @@ public class Key<T> {
 
     @Nullable
     public static Key<?> findKeyByName(@NotNull String name) {
-        for (IntObjectMap.Entry<Key<?>> key : ALL_KEYS.entrySet()) {
-            if (name.equals(key.getValue().name)) {
-                return key.getValue();
+        for (Map.Entry<Integer, WeakReference<Key<?>>> integerWeakReferenceEntry : ALL_KEYS.entrySet()) {
+            WeakReference<Key<?>> value = integerWeakReferenceEntry.getValue();
+            if (value == null) {
+                continue;
+            }
+            Key<?> key = value.get();
+            if (key == null) {
+                continue;
+            }
+            if (name.equals(key.getName())) {
+                return key;
             }
         }
         return null;
     }
 
     @NotNull
-    public static IntObjectMap<Key<?>> getAllKeys() {
+    public static ConcurrentHashMap<Integer, WeakReference<Key<?>>> getAllKeys() {
         return Key.ALL_KEYS;
     }
 
